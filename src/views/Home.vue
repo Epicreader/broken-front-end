@@ -1,18 +1,34 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<div class="home">
+  <image-gallery :photos="photos" />
+  <p v-if="error">{{error}}</p>
+</div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import axios from 'axios';
+import ImageGallery from '@/components/ImageGallery.vue';
 export default {
   name: 'Home',
   components: {
-    HelloWorld
+    ImageGallery,
+  },  data() {
+    return {
+      photos: [],
+      error: '',
+    }
+  },  created() {
+    this.getPhotos();
+  },
+  methods: {
+    async getPhotos() {
+      try {
+        let response = await axios.get("/api/photos/all");
+        this.photos = response.data;
+      } catch (error) {
+        this.error = error.response.data.message;
+      }
+    },
   }
 }
 </script>
